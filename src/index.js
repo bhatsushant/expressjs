@@ -12,18 +12,27 @@ const mockUsers = [
   },
   {
     id: 2,
-    username: "sam",
-    displayName: "Sam"
+    username: "tanay",
+    displayName: "Tanay"
   },
   {
     id: 3,
-    username: "sushi",
-    displayName: "Sushi"
+    username: "harshal",
+    displayName: "Harshal"
   }
 ];
 
 app.get("/api/users", (req, res) => {
-  res.status(200).send(mockUsers);
+  const {
+    query: { filter, value }
+  } = req;
+  if (filter && value)
+    return res
+      .status(200)
+      .send(
+        mockUsers.filter(user => user[filter].toLowerCase().includes(value))
+      );
+  return res.status(200).send(mockUsers);
 });
 
 app.get("/api/users/:id", (req, res) => {
