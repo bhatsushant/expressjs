@@ -4,6 +4,8 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
+
 const mockUsers = [
   {
     id: 1,
@@ -22,18 +24,26 @@ const mockUsers = [
   }
 ];
 
-app.get("/api/users", (req, res) => {
-  const {
-    query: { filter, value }
-  } = req;
-  if (filter && value)
-    return res
-      .status(200)
-      .send(
-        mockUsers.filter(user => user[filter].toLowerCase().includes(value))
-      );
-  return res.status(200).send(mockUsers);
-});
+app
+  .route("/api/users")
+  .get((req, res) => {
+    const {
+      query: { filter, value }
+    } = req;
+    if (filter && value)
+      return res
+        .status(200)
+        .send(
+          mockUsers.filter(user => user[filter].toLowerCase().includes(value))
+        );
+    return res.status(200).send(mockUsers);
+  })
+  .post((req, res) => {
+    const { body } = req;
+    const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...body };
+    mockUsers.push(newUser);
+    return res.status(201).send(newUser);
+  });
 
 app.get("/api/users/:id", (req, res) => {
   const parsedId = parseInt(req.params.id);
