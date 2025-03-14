@@ -67,6 +67,18 @@ app
     if (findUserIndex === -1) return res.sendStatus(404);
     mockUsers[findUserIndex] = { id: parsedId, ...body };
     return res.sendStatus(201);
+  })
+  .patch((req, res) => {
+    const {
+      body,
+      params: { id }
+    } = req;
+    const parsedId = parseInt(id);
+    const findUserIndex = mockUsers.findIndex(user => user.id === parsedId);
+    if (isNaN(parsedId)) return res.sendStatus(400);
+    if (findUserIndex === -1) return res.sendStatus(404);
+    mockUsers[findUserIndex] = { ...mockUsers[findUserIndex], ...body };
+    return res.sendStatus(201);
   });
 
 app.listen(PORT, () => {
