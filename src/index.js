@@ -45,15 +45,29 @@ app
     return res.status(201).send(newUser);
   });
 
-app.get("/api/users/:id", (req, res) => {
-  const parsedId = parseInt(req.params.id);
-  if (isNaN(parsedId))
-    return res.status(400).send({ msg: "Bad Request. Invalid ID" });
-  const findUser = mockUsers.find(user => user.id === parsedId);
-  console.log(findUser);
-  if (!findUser) return res.sendStatus(404);
-  return res.status(200).send(findUser);
-});
+app
+  .route("/api/users/:id")
+  .get((req, res) => {
+    const parsedId = parseInt(req.params.id);
+    if (isNaN(parsedId))
+      return res.status(400).send({ msg: "Bad Request. Invalid ID" });
+    const findUser = mockUsers.find(user => user.id === parsedId);
+    if (!findUser) return res.sendStatus(404);
+    return res.status(200).send(findUser);
+  })
+  .put((req, res) => {
+    // This will completely replace resourse with the new request body
+    const {
+      body,
+      params: { id }
+    } = req;
+    const parsedId = parseInt(id);
+    if (isNaN(parsedId)) return res.sendStatus(400);
+    const findUserIndex = mockUsers.findIndex(user => user.id === parsedId);
+    if (findUserIndex === -1) return res.sendStatus(404);
+    mockUsers[findUserIndex] = { id: parsedId, ...body };
+    return res.sendStatus(201);
+  });
 
 app.listen(PORT, () => {
   console.log(`Running on PORT ${PORT}`);
