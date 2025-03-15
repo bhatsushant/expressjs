@@ -13,6 +13,11 @@ const loggingMiddleware = (req, res, next) => {
 
 app.use(loggingMiddleware);
 
+app.use(loggingMiddleware, (req, res, next) => {
+  console.log("Finished logging route parameters...");
+  next();
+});
+
 const mockUsers = [
   {
     id: 1,
