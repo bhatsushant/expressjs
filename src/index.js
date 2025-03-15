@@ -6,6 +6,13 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+const loggingMiddleware = (req, res, next) => {
+  console.log(`${req.method} - ${req.url}`);
+  next();
+};
+
+app.use(loggingMiddleware);
+
 const mockUsers = [
   {
     id: 1,
